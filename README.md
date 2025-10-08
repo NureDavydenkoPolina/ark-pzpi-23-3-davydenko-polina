@@ -5,6 +5,6 @@
 
 Застосування принципів SOLID у розробці на Python
 
-Повна назва доповіді ПЗ2
+Застосування методів рефакторингу Extract Method, Rename Method та Simplify Conditional Expression для реалізації принципів SOLID у Python
 
 Повна назва міні-проєкту ЛР
