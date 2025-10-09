@@ -7,4 +7,4 @@
 
 Застосування методів рефакторингу Extract Method, Rename Method та Simplify Conditional Expression для реалізації принципів SOLID у Python
 
-Повна назва міні-проєкту ЛР
+Програмна система для автоматизації професії офіціанту
