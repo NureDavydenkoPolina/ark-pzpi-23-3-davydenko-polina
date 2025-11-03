@@ -3,9 +3,9 @@
 
 Давиденко Поліна
 
-Застосування принципів SOLID у розробці на Python
+Застосування принципів SOLID у розробці програмного забезпечення компанії Spotify на Python
 
-Застосування методів рефакторингу Extract Method, Rename Method та Simplify Conditional Expression для реалізації принципів SOLID у Python
+Застосування методів рефакторингу Extract Method, Rename Method та Simplify Conditional Expression для реалізації принципів SOLID у Python (на прикладі проекту Spotify)
 
 Програмна система для автоматизації професії офіціанту
 
