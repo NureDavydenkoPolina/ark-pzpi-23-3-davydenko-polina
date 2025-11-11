@@ -1,0 +1,239 @@
+Харківський національний університет радіоелектроніки
+Факультет комп’ютерних наук
+Катедра програмної інженерії
+
+
+
+ЗВІТ
+до практичного завдання №1
+з дисципліни «Аналіз та рефакторинґ коду»
+на тему: «Правила оформлення та стандарти якості програмного коду у Python-проєктах компанії Spotify»
+
+
+
+Виконала
+ст. гр. ПЗПІ-23-3 
+Давиденко Поліна
+Перевірив
+ст. викладач катедри ПІ
+Сокорчук Ігор Петрович
+
+
+
+Харків 2025
+1 ІСТОРІЯ ЗМІН
+№
+Дата
+Версія звіту
+Опис змін та виправлень
+1
+07.11.2025
+0.1
+Створено розділ «Завдання»
+2
+11.11.2025
+0.1
+Створено розділ «Опис Виконаної роботи»
+
+
+2 ЗАВДАННЯ
+	Метою даної роботи є вивчення правил оформлення програмного коду на мові Python та ознайомлення зі стандартами якості, яких дотримуються великі компанії під час розробки програмного забезпечення. Необхідно дослідити приклади оформлення коду, що відповідають стандарту PEP 8, а також розглянути застосування архітектурних принципів SOLID у відкритих Python-проєктах компанії Spotify. Під час виконання роботи потрібно проаналізувати фрагменти коду з відкритих бібліотек Pedalboard та Klio, визначити їхню структуру, коментарі, документацію та особливості дотримання вимог до читабельності й підтримуваності програмного коду.
+
+
+3 ОПИС ВИКОНАНОЇ РОБОТИ
+	У ході виконання роботи було досліджено правила оформлення програмного коду на мові Python відповідно до стандарту PEP 8, який визначає вимоги до відступів, іменування, структури імпортів, розташування коментарів та довжини рядків. Особливу увагу приділено важливості дотримання єдиного стилю під час роботи великих команд розробників.
+	Розглянуто приклади програмного коду компанії Spotify, що активно використовує Python у своїх проєктах для побудови бекенд-сервісів, обробки аудіо та машинного навчання. На прикладі відкритих бібліотек Pedalboard і Klio показано, як Spotify реалізує принципи чистого коду: короткі та зрозумілі функції, чітку структуру класів, логічну послідовність імпортів, наявність докстрінгів і коментарів. У коді компанії дотримуються правил форматування, що забезпечує зручність для командної роботи та автоматичну перевірку якості за допомогою інструментів flake8 і black.
+	Крім стилістичних правил, було розглянуто архітектурні принципи SOLID, які допомагають створювати масштабовані та підтримувані програми. У відкритих проєктах Spotify класи та функції мають єдину відповідальність, а розширення системи відбувається без зміни вже написаного коду. Це демонструє практичне використання принципів об’єктно-орієнтованого програмування в реальних промислових умовах.
+	Під час аналізу також було звернуто увагу на роль документації й коментарів у процесі розробки. Spotify використовує короткі, але змістовні докстрінги, які пояснюють призначення функцій та параметрів. Таке оформлення забезпечує зрозумілість коду для всієї команди та полегшує автоматичне створення документації.
+	Для дослідження було використано офіційні відкриті ресурси компанії Spotify - GitHub-репозиторії, документацію бібліотек та технічні блоги Spotify Engineering, які містять опис принципів розробки, стандартів оформлення та приклади використання Python у їхніх проєктах.
+
+
+4 ВИСНОВКИ
+	У ході виконання роботи було розглянуто правила оформлення програмного коду на мові Python та стандарти якості, яких дотримується компанія Spotify під час розробки своїх продуктів. Ознайомлення з принципами PEP 8 і SOLID дозволило зрозуміти важливість структурованого, читабельного та узгодженого коду.
+	Отримано навички аналізу стилю програмного коду, розпізнавання правильних рішень щодо форматування, іменування та документування програм. Проаналізовано приклади коду з відкритих проєктів Spotify, які підтверджують, що дотримання стандартів оформлення підвищує якість, надійність і зручність підтримки програмного забезпечення.
+	Таким чином, дотримання єдиних правил оформлення коду є невід’ємною частиною професійної культури розробки та важливою умовою ефективної командної роботи в сучасних ІТ-проєктах.
+
+
+5 ВИКОРИСТАНІ ДЖЕРЕЛА
+1. GitHub - spotify/klio: Smarter data pipelines for audio. GitHub. URL: https://github.com/spotify/klio (date of access: 07.11.2025).
+2. GitHub - spotify/pedalboard: A Python library for audio. GitHub. URL: https://github.com/spotify/pedalboard (date of access: 07.11.2025).
+3. How we use Python at Spotify | Spotify Engineering. Spotify Engineering. URL: https://engineering.atspotify.com/2013/03/how-we-use-python-at-spotify (date of access: 07.11.2025).
+4. Spotify Open Source Projects. Spotify Open Source Projects. URL: https://spotify.github.io/#python (date of access: 07.11.2025).
+5. The pedalboard API. Pedalboard v0.9.19 Documentation. URL: https://spotify.github.io/pedalboard/reference/pedalboard.html (date of access: 07.11.2025).
+
+
+ДОДАТОК А
+Відеозапис
+Відеозапис доповіді: https://youtu.be/TIost4pERb0
+Хронологічний опис відеозапису:
+00:00 - тема презентації, представлення
+00:12 - вступ, роль python у spotify
+00:56 - Стандарти оформлення коду у Spotify
+01:30 - дотримання PEP 8 у Spotify
+02:40 - що таке Pedalboard
+03:10 - Дотримання PEP 8 у spotify з прикладом із Pedalboard
+03:38 - Коментарі та документація у коді spotify
+04:41 - що таке Klio
+05:01 - принципи SOLID у Spotify
+05:15 - Single Responsibility Principle
+05:43 - Open/Closed Principle
+06:01 - Liskov Substitution Principle
+06:27 - Interface Segregation Principle
+06:52 - Dependency Inversion Principle
+07:12 - Підтримка культури якості у Spotify
+07:48 - Висновки і використані джерела
+
+
+ДОДАТОК Б
+Слайди презентації
+
+Рисунок Б.1 - Тема презентації, представлення
+
+
+Рисунок Б.2 - Вступ, роль python у spotify
+
+
+Рисунок Б.3 - Стандарти оформлення коду у Spotify
+
+
+Рисунок Б.4 - Дотримання PEP 8 у Spotify
+
+
+Рисунок Б.5 - Що таке Pedalboard
+
+
+Рисунок Б.6 - Дотримання PEP 8 у spotify з прикладом із Pedalboard
+
+
+Рисунок Б.7 - Коментарі та документація у коді spotify
+
+
+Рисунок Б.8 - Що таке Klio
+
+
+Рисунок Б.9 - Принципи SOLID у Spotify
+
+
+Рисунок Б.10 - Single Responsibility Principle
+
+
+Рисунок Б.11 - Open/Closed Principle
+
+
+Рисунок Б.12 - Liskov Substitution Principle
+
+
+Рисунок Б.13 - Interface Segregation Principle
+
+
+Рисунок Б.14 - Dependency Inversion Principle
+
+
+Рисунок Б.15 - Підтримка культури якості у Spotify
+
+
+Рисунок Б.16 - Висновки 
+
+
+Рисунок Б.17 - Використані джерела
+
+
+ДОДАТОК В
+Програмний код
+В.1 Дотримання PEP 8 у spotify
+1  class Pedalboard:
+2      """A container for audio effects that can be applied in sequence."""
+3  
+4      def __init__(self, plugins=None):
+5          self.plugins = plugins or []
+6  
+7      def __call__(self, samples: np.ndarray, sample_rate: int) -> np.ndarray:
+8          """Process audio samples through each plugin in sequence."""
+9          for plugin in self.plugins:
+10              samples = plugin(samples, sample_rate)
+11          return samples
+
+В.2 Коментарі та документація у коді spotify
+1  def apply_effects(audio_buffer: np.ndarray, sample_rate: int) -> np.ndarray:
+2      """
+3      Apply a chain of audio effects to the given audio_buffer.
+4
+5      :param audio_buffer: NumPy array of audio samples
+6      :param sample_rate: Sampling rate of audio
+7      :return: Processed audio buffer
+8      """
+9      board = Pedalboard()
+10      board.append(Reverb(room_size=0.5))
+11      board.append(Compressor(threshold_db=-20))
+12      return board(audio_buffer, sample_rate)
+
+В.3 Принципи SOLID у Spotify
+1  from pedalboard import Reverb, Compressor
+2
+3  class AudioProcessor:
+4      def __init__(self):
+5          self.reverb = Reverb(room_size=0.5)
+6          self.compressor = Compressor(threshold_db=-20)
+7
+8      def process(self, audio, rate):
+9          # Кожен компонент має свою роль
+10          audio = self.reverb(audio, rate)
+11          return self.compressor(audio, rate)
+
+1  class AudioJob:
+2      def process(self, file):
+3          raise NotImplementedError
+4
+5  class NoiseReduction(AudioJob):
+6      def process(self, file):
+7          return reduce_noise(file)
+8
+9  class FeatureExtraction(AudioJob):
+10      def process(self, file):
+11          return extract_features(file)
+
+1  class Plugin:
+2      def __call__(self, audio, rate):
+3          raise NotImplementedError
+4
+5  class Chorus(Plugin):
+6      def __call__(self, audio, rate):
+7          return apply_chorus(audio, rate)
+8
+9  class Distortion(Plugin):
+10      def __call__(self, audio, rate):
+11          return apply_distortion(audio, rate)
+
+1  class SpotifyLibrary:
+2      def get_artist_albums(self, artist_id):
+3          ...
+4
+5      def get_user_playlists(self, user_id):
+6          ...
+7
+8  class SpotifyPlayer:
+9      def pause(self):
+10          ...
+11
+12      def next_track(self):
+13          ...
+
+1  class StorageInterface:
+2      def save(self, data):
+3          pass
+4
+5  class S3Storage(StorageInterface):
+6      def save(self, data):
+7          # збереження даних у AWS S3
+8          pass
+9
+10  class AudioPipeline:
+11      def __init__(self, storage: StorageInterface):
+12          self.storage = storage
+13
+14      def process(self, data):
+15          processed = transform_audio(data)
+16          self.storage.save(processed)
+
+
+
