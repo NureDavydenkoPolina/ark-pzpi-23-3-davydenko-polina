@@ -1,0 +1,187 @@
+﻿Харківський національний університет радіоелектроніки
+Факультет комп’ютерних наук
+Катедра програмної інженерії
+
+
+
+ЗВІТ
+до практичного завдання №2
+з дисципліни «Аналіз та рефакторинґ коду»
+на тему: «Методи рефакторингу Extract Method, Rename Method та Simplify Conditional Expression у Python (на прикладі проекту Spotify)»
+
+
+
+Виконала
+ст. гр. ПЗПІ-23-3 
+Давиденко Поліна
+Перевірив
+ст. викладач катедри ПІ
+Сокорчук Ігор Петрович
+
+
+
+Харків 2025
+1 ІСТОРІЯ ЗМІН
+№
+Дата
+Версія звіту
+Опис змін та виправлень
+1
+27.11.2025
+0.1
+Створено розділ «Завдання»
+2
+28.11.2025
+0.1
+Створено розділ «Опис Виконаної роботи»
+
+
+2 ЗАВДАННЯ
+	Підготувати та оформити у вигляді презентації доповідь на тему: «Методи рефакторингу Extract Method, Rename Method та Simplify Conditional Expression у Python (на прикладі проекту Spotify)».  У даній роботі розглядаються методи Extract Method, Rename Method та Simplify Conditional Expression на прикладі Python-проєктів компанії Spotify.
+
+
+3 ОПИС ВИКОНАНОЇ РОБОТИ
+	Під час виконання практичної роботи було опрацьовано теоретичний матеріал з книги Роберта Мартіна «Чистий код», а також додаткові онлайн-джерела, присвячені технікам рефакторингу та практиці їх застосування у реальних проєктах. На основі цього матеріалу були обрані три методи рефакторингу: Extract Method, Rename Method та Simplify Conditional Expression.
+	Далі було проаналізовано відкриті Python-репозиторії компанії Spotify (зокрема бібліотеку Pedalboard та інші проєкти). Для кожного методу було сформульовано коротке визначення, області застосування, переваги та пояснення, як саме зміни впливають на читабельність, підтримуваність та структуру коду.
+
+4 ВИСНОВКИ
+	У ході виконання роботи було поглиблено розуміння поняття рефакторингу як систематичного покращення внутрішньої структури програми без зміни її зовнішньої поведінки. На прикладі методів Extract Method, Rename Method та Simplify Conditional Expression показано, як невеликі, але продумані зміни дозволяють зробити код більш зрозумілим, структурованим і зручним для подальшої підтримки.
+	Аналіз відкритих Python-проєктів компанії Spotify продемонстрував, що принципи, описані Мартіном у «Чистому коді», активно застосовуються в індустрії.
+
+5 ВИКОРИСТАНІ ДЖЕРЕЛА
+1. Martin, R. C. (2008). Clean Code: A Handbook of Agile Software Craftsmanship. Prentice Hall (date of access: 27.11.2025)..
+2. GitHub - spotify/pedalboard: A Python library for audio. GitHub. URL: https://github.com/spotify/pedalboard (date of access: 27.11.2025).
+3. How we use Python at Spotify | Spotify Engineering. Spotify Engineering. URL: https://engineering.atspotify.com/2013/03/how-we-use-python-at-spotify (date of access: 27.11.2025).
+4. Refactoring: clean your code. Refactoring and Design Patterns. URL: https://refactoring.guru/refactoring (date of access: 27.11.2025).
+
+ДОДАТОК А
+Відеозапис
+Відеозапис доповіді: https://youtu.be/o0PRInIRpsM
+Хронологічний опис відеозапису:
+00:00 - тема презентації, представлення
+00:16 - Що таке рефакторинг
+00:49 - Навіщо потрібен рефакторинг
+01:14 - Обрані методи рефакторингу
+01:33 - Extract Method: загальна ідея
+02:23 - Extract Method приклад до і після
+03:40 - Rename Method: загальна ідея
+04:15 - Rename Method приклад до і після
+05:45 - Simplify Conditional Expression: загальна ідея
+06:31 - Simplify Conditional Expression приклад до і після
+07:53 - Роль цих методів у Clean Code та Agile
+08:25 - Висновки і використані джерела
+
+
+ДОДАТОК Б
+Слайди презентації
+
+Рисунок Б.1 - Тема презентації, представлення
+
+
+Рисунок Б.2 - Вступ, Що таке рефакторинг
+
+
+Рисунок Б.3 - Навіщо потрібен рефакторинг
+
+
+Рисунок Б.4 - Обрані методи рефакторингу
+
+
+Рисунок Б.5 - Extract Method: загальна ідея
+
+
+Рисунок Б.6 - Extract Method приклад
+
+
+Рисунок Б.7 - Rename Method: загальна ідея
+
+
+Рисунок Б.8 - Rename Method приклад
+
+
+Рисунок Б.9 - Simplify Conditional Expression: загальна ідея
+
+
+Рисунок Б.10 - Simplify Conditional Expression приклад
+
+
+Рисунок Б.11 - Роль цих методів у Clean Code та Agile
+
+
+Рисунок Б.12 - Висновки
+
+
+Рисунок Б.13 - Використані джерела
+
+
+
+ДОДАТОК В
+Програмний код
+В.1 Extract Method приклад до
+1 from pedalboard import Pedalboard, Chorus, Reverb
+2 from pedalboard.io import AudioFile
+3 
+4 board = Pedalboard([Chorus(), Reverb(room_size=0.25)])
+5 
+6 def process_song(input_path, output_path):
+7     with AudioFile(input_path) as input_f:
+8         with AudioFile(output_path, "w",
+9                        input_f.samplerate,
+10                        input_f.num_channels) as output_f:
+11             while input_f.tell() < input_f.frames:
+12                 chunk = input_f.read(input_f.samplerate)
+13                 processed = board(chunk, input_f.samplerate, reset=False)
+14                 output_f.write(processed)
+
+В.2 Extract Method приклад після
+1 from pedalboard import Pedalboard, Chorus, Reverb
+2 from pedalboard.io import AudioFile
+3 
+4 board = Pedalboard([Chorus(), Reverb(room_size=0.25)])
+5 
+6 def process_chunk(board, chunk, samplerate):
+7     """Застосувати ефекти до одного шматка аудіо."""
+8     return board(chunk, samplerate, reset=False)
+9 
+10 def process_song(input_path, output_path):
+11     with AudioFile(input_path) as input_f:
+12         with AudioFile(output_path, "w",
+13                        input_f.samplerate,
+14                        input_f.num_channels) as output_f:
+15             while input_f.tell() < input_f.frames:
+16                 chunk = input_f.read(input_f.samplerate)
+17                 processed = process_chunk(board, chunk, input_f.samplerate)
+18                 output_f.write(processed)
+
+В.3 Rename Method приклад до
+1 def process_file(path):
+2     with AudioFile(path) as input_f:
+3         ...
+
+
+В.4 Rename Method приклад після
+1 def apply_pedalboard_to_file(input_path, output_path, board):
+2     with AudioFile(input_path) as input_f:
+3         with AudioFile(output_path, "w",
+4                        input_f.samplerate,
+5                        input_f.num_channels) as output_f:
+6             ...
+
+В.5 Simplify Conditional Expression приклад до
+1 def is_supported_audio_file(path):
+2     ext = path.split(".")[-1].lower()
+3 
+4     if ext == "wav" or ext == "flac" or ext == "mp3" or ext == "ogg":
+5         return True
+6     else:
+7         return False
+
+В.6 Simplify Conditional Expression приклад після
+1 SUPPORTED_EXTENSIONS = {"wav", "flac", "mp3", "ogg"}
+2 
+3 def is_supported_audio_file(path):
+4     ext = path.split(".")[-1].lower()
+5     return ext in SUPPORTED_EXTENSIONS
+2
+
+
