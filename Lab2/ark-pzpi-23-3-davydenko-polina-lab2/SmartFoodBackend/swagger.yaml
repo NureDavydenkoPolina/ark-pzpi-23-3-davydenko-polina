@@ -1,0 +1,184 @@
+swagger: "2.0"
+info:
+  title: SmartFood API
+  version: "1.0.0"
+  description: REST API системи SmartFood
+
+host: "127.0.0.1:5000"
+schemes:
+  - http
+
+consumes:
+  - application/json
+produces:
+  - application/json
+
+paths:
+
+  /api/menu:
+    get:
+      tags: [Menu]
+      summary: Отримання списку страв меню
+      responses:
+        200:
+          description: Успішне отримання меню
+          examples:
+            application/json:
+              - dish_id: 1
+                dish_name: "Капучіно"
+                price: 70.0
+                description: "Еспресо з молочною піною"
+
+  /api/order/create:
+    post:
+      tags: [Order]
+      summary: Створення нового замовлення
+      parameters:
+        - in: body
+          name: table
+          required: true
+          schema:
+            type: object
+            properties:
+              table_id:
+                type: integer
+                example: 4
+      responses:
+        200:
+          description: Замовлення створено
+          examples:
+            application/json:
+              order_id: 10
+              status: "created"
+
+  /api/order/{order_id}:
+    get:
+      tags: [Order]
+      summary: Перегляд замовлення
+      parameters:
+        - name: order_id
+          in: path
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Інформація про замовлення
+          examples:
+            application/json:
+              order_id: 10
+              table_id: 4
+              status: "cooking"
+              total_price: 240.0
+
+  /api/order/{order_id}/add-item:
+    post:
+      tags: [Order Items]
+      summary: Додавання страви до замовлення
+      parameters:
+        - name: order_id
+          in: path
+          required: true
+          type: integer
+        - in: body
+          name: item
+          required: true
+          schema:
+            type: object
+            properties:
+              dish_id:
+                type: integer
+                example: 3
+              quantity:
+                type: integer
+                example: 2
+      responses:
+        200:
+          description: Позицію додано
+
+  /api/order/{order_id}/items:
+    get:
+      tags: [Order Items]
+      summary: Перегляд позицій замовлення
+      parameters:
+        - name: order_id
+          in: path
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Список позицій замовлення
+          examples:
+            application/json:
+              - dish_id: 3
+                quantity: 2
+                unit_price: 120
+                total_item_price: 240
+
+  /api/order/{order_id}/status:
+    put:
+      tags: [Order]
+      summary: Оновлення статусу
+      parameters:
+        - name: order_id
+          in: path
+          required: true
+          type: integer
+        - in: body
+          name: status
+          required: true
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "ready"
+      responses:
+        200:
+          description: Статус оновлено
+          examples:
+            application/json:
+              order_id: 10
+              new_status: "ready"
+
+  /api/order/{order_id}/total:
+    get:
+      tags: [Order]
+      summary: Отримання загальної суми замовлення
+      parameters:
+        - name: order_id
+          in: path
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Загальна сума
+          examples:
+            application/json:
+              order_id: 10
+              total_price: 240
+
+  /api/order/{order_id}/delete-item:
+    delete:
+      tags: [Order Items]
+      summary: Видалення позиції страви
+      parameters:
+        - name: order_id
+          in: path
+          required: true
+          type: integer
+        - in: body
+          name: item
+          required: true
+          schema:
+            type: object
+            properties:
+              dish_id:
+                type: integer
+                example: 3
+      responses:
+        200:
+          description: Позицію видалено
+          examples:
+            application/json:
+              message: "Позицію видалено"
+              dish_id: 3
