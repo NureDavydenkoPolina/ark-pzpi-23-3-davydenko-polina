@@ -18,7 +18,23 @@
 
 Харків 2025
 1 ІСТОРІЯ ЗМІН
-№ДатаВерсія звітуОпис змін та виправлень125.11.20250.1Створено розділ «Завдання»203.12.20250.2Створено розділ «Опис Виконаної роботи»304.12.20250.3Завершено розділ «Опис Виконаної роботи»
+№
+Дата
+Версія звіту
+Опис змін та виправлень
+1
+25.11.2025
+0.1
+Створено розділ «Завдання»
+2
+03.12.2025
+0.2
+Створено розділ «Опис Виконаної роботи»
+3
+04.12.2025
+0.3
+Завершено розділ «Опис Виконаної роботи»
+
 
 
 2 ЗАВДАННЯ
@@ -224,7 +240,34 @@ def delete_order_item(order_id, dish_id):
 		Нижче наведено перелік основних ендпоінтів та їх призначення.
 
 
-ЕндпоінтМетодПризначення/api/menuGETОтримання переліку страв меню/api/order/createPOSTСтворення нового замовлення/api/order/<id>GETОтримання інформації про конкретне замовлення/api/order/<id>/add-itemPOSTДодавання страви до замовлення/api/order/<id>/statusPUTОновлення статусу замовлення/api/order/<id>/itemsGETПерегляд позицій, що входять до замовлення/api/order/<id>/totalGETОбчислення підсумкової вартості замовлення/api/order/<id>/delete-itemDELETEВидалення певної страви із замовлення
+Ендпоінт
+Метод
+Призначення
+/api/menu
+GET
+Отримання переліку страв меню
+/api/order/create
+POST
+Створення нового замовлення
+/api/order/<id>
+GET
+Отримання інформації про конкретне замовлення
+/api/order/<id>/add-item
+POST
+Додавання страви до замовлення
+/api/order/<id>/status
+PUT
+Оновлення статусу замовлення
+/api/order/<id>/items
+GET
+Перегляд позицій, що входять до замовлення
+/api/order/<id>/total
+GET
+Обчислення підсумкової вартості замовлення
+/api/order/<id>/delete-item
+DELETE
+Видалення певної страви із замовлення
+
 3.7  Специфікація розробленого API
 		У даному розділі представлена деталізація реалізованих ендпоінтів, форматів запитів і відповідей, а також приклади їх використання.
 1. Отримання меню
@@ -356,7 +399,6 @@ HTTP-метод: DELETE
 2. OpenAPI Specification - Version 3.1.0 | Swagger. API Documentation & Design Tools for Teams | Swagger. URL: https://swagger.io/specification/ (date of access: 03.12.2025).
 3. SQLAlchemy Documentation – SQLAlchemy 2.0 Documentation. SQLAlchemy Documentation – SQLAlchemy 2.0 Documentation. URL: https://docs.sqlalchemy.org/en/20/ (date of access: 25.12.2025).
 4. Welcome to Flask – Flask Documentation (3.1.x). Welcome to Flask – Flask Documentation (3.1.x). URL: https://flask.palletsprojects.com/en/stable/ (date of access: 25.12.2025).
-5. 
 
 ДОДАТОК А
 Відеозапис
@@ -382,19 +424,19 @@ HTTP-метод: DELETE
 Програмний код
 Б.1 Логіка взаємодії з БД
 GitHub репозиторій: https://github.com/NureDavydenkoPolina/ark-pzpi-23-3-davydenko-polina/blob/main/Lab2/ark-pzpi-23-3-davydenko-polina-lab2/SmartFoodBackend/config.py
-1.  from flask_sqlalchemy import SQLAlchemy
-2.  from flask import Flask
-3.  
-4.  app = Flask(__name__)
-5.  
-6.  app.config["SQLALCHEMY_DATABASE_URI"] = (
-7.      "mssql+pyodbc://DESKTOP-5GUF215\\SQLEXPRESS/SmartFood?driver=ODBC+Driver+18+for+SQL+Server&Trusted_Connection=yes&Encrypt=no"
-8.  )
-9.  
-10. app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-11. app.config["JSON_AS_ASCII"] = False
-12. 
-13. db = SQLAlchemy(app)
+1  from flask_sqlalchemy import SQLAlchemy
+2  from flask import Flask
+3  
+4  app = Flask(__name__)
+5  
+6  app.config["SQLALCHEMY_DATABASE_URI"] = (
+7      "mssql+pyodbc://DESKTOP-5GUF215\\SQLEXPRESS/SmartFood?driver=ODBC+Driver+18+for+SQL+Server&Trusted_Connection=yes&Encrypt=no"
+8  )
+9  
+10 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+11 app.config["JSON_AS_ASCII"] = False
+12 
+13 db = SQLAlchemy(app)
 
 Б.2 Моделі
 GitHub репозиторій: https://github.com/NureDavydenkoPolina/ark-pzpi-23-3-davydenko-polina/blob/main/Lab2/ark-pzpi-23-3-davydenko-polina-lab2/SmartFoodBackend/models/models.py
@@ -464,7 +506,3 @@ GitHub репозиторій: https://github.com/NureDavydenkoPolina/ark-pzpi-2
 64      quantity = db.Column(db.Integer, nullable=False)
 65      unit_price = db.Column(db.Float, nullable=False)
 66      total_item_price = db.Column(db.Float, nullable=False)
-
-2
-
-
