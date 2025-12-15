@@ -1,0 +1,438 @@
+﻿Харківський національний університет радіоелектроніки
+Факультет комп’ютерних наук
+Катедра програмної інженерії
+
+
+ЗВІТ
+до лабораторної роботи №3
+з дисципліни «Аналіз та рефакторинґ коду»
+на тему: «Розробка бізнес логіки та функцій адміністрування серверної частини системи»
+
+
+Виконала
+ст. гр. ПЗПІ-23-3 
+Давиденко Поліна
+Перевірив
+ст. викладач катедри ПІ
+Сокорчук Ігор Петрович
+
+
+Харків 2025
+1 ІСТОРІЯ ЗМІН
+№
+Дата
+Версія звіту
+Опис змін та виправлень
+1
+10.12.2025
+0.1
+Створено розділ «Завдання»
+2
+10.12.2025
+0.2
+Створено розділ «Опис Виконаної роботи»
+3
+11.12.2025
+0.3
+Завершено розділ «Опис Виконаної роботи»
+
+
+2 ЗАВДАННЯ
+1. Розробити бізнес логіку серверної частини програмної системи:
+* Спроектувати алгоритми, що будуть реалізовані в бізнес логіці. Бізнес логіка повинна забезпечувати основні операції з даними, обробку запитів від клієнтів, та виконання специфічних правил роботи системи.
+2. Розробити функції адміністрування серверної частини програмної системи:
+* Розробити функції, які забезпечуватимуть адміністрування системи, наприклад, управління користувачами, налаштування системних параметрів, моніторинг активності, доступ до логів та управління ролями.
+3. Створити програмну реалізацію бізнес логіки та функцій адміністрування серверної частини:
+* Реалізувати програмний код для бізнес логіки на серверній частині, включаючи обробку запитів до бази даних та взаємодію з клієнтами.
+* Реалізувати програмний код для функцій адміністрування, зокрема функції управління користувачами, моніторингу, та зміни системних параметрів.
+4. Перевірити роботу серверної частини системи:
+* Провести тестування розроблених функцій бізнес логіки та адміністрування. Переконатися у коректній роботі всіх розроблених компонентів та їх взаємодії з клієнтами і базою даних.
+
+
+3 ОПИС ВИКОНАНОЇ РОБОТИ
+	3.1. Розробка бізнес логіки серверної частини програмної системи
+	У процесі розробки серверної частини системи SmartFood було розроблено повний цикл бізнес-логіки обробки замовлення - від створення клієнтом до завершення виконання персоналом. Основною метою бізнес-логіки є забезпечення коректної взаємодії між ролями користувачів, даними бази та правилами роботи ресторану.
+	Клієнтська частина взаємодії реалізована без обов’язкової авторизації, оскільки ідентифікація здійснюється за номером столу. Клієнт має доступ лише до меню та можливості сформувати замовлення. Після створення замовлення система автоматично присвоює йому статус created. Подальший життєвий цикл замовлення контролюється персоналом закладу. У бізнес-логіці визначено такі ключові стани:
+* cooking - кухар прийняв замовлення в роботу;
+* ready - страва приготована та готова до доставки;
+* delivered - офіціант доставив замовлення клієнту;
+* paid - фінальне підтвердження оплати.
+	Перехід між статусами можливий лише для відповідних ролей, що контролюється через механізм JWT-авторизації та рольових перевірок.
+	Після встановлення статусу delivered продаж фіксується у статистиці та враховується під час формування популярності страв.
+
+
+	3.2 Розробка функцій адміністрування серверної частини програмної системи
+	Адміністрування у системі SmartFood доступне лише авторизованим користувачам з роллю адміністратора. Кожна адміністративна дія проходить обов’язкову перевірку JWT-токена та підтвердження ролі. Основні функції адміністрування включають:
+* Керування користувачами: створення нових облікових записів, встановлення та зміна ролей (клієнт, офіціант, кухар, адміністратор). Для захисту даних паролі зберігаються у БД у вигляді хешів (bcrypt).
+* Керування меню (CRUD): адміністратор може створювати, редагувати й видаляти страви, змінювати опис, ціну та категорію.
+* Моніторинг замовлень: адміністратор може переглядати всі замовлення, їх статуси, час створення, суму, відповідальних співробітників.
+* Аналітика та статистика продажів: реалізовано можливість отримання інформації про найпопулярніші страви.
+* Управління системою ролей: адміністратор має окремий API-ендпоінт для зміни ролі будь-якого користувача.
+	3.3 UML-діаграми діяльності та взаємодії
+	Діаграма діяльності демонструє послідовність кроків у процесі створення та виконання замовлення - від перегляду меню клієнтом до завершення доставки офіціантом. У цій діаграмі відображено ключові рішення, ролі користувачів, переходи між статусами та залежності між діями. Вона описує бізнес-процес і підтверджує коректність розробленої логіки життєвого циклу замовлення. Також її можна переглянути за посиланням.
+
+Рисунок 3.1 - UML-діаграма діяльності
+	Діаграма взаємодії була побудована для моделювання обміну повідомленнями між користувачем, API та базою даних під час оновлення статусу замовлення та виконання операцій персоналом. У ній відображено, як система перевіряє JWT-токен, визначає роль користувача, звертається до бізнес-логіки, оновлює дані в базі та повертає результат. Така діаграма дає змогу простежити технічну взаємодію між компонентами системи, підтверджує цілісність архітектури та узгодженість бізнес-правил із серверною реалізацією. Також її можна переглянути за посиланням.
+
+
+Рисунок 3.2 - UML-діаграма взаємодії
+
+
+
+4 ВИСНОВКИ
+	У ході виконання лабораторної роботи було розроблено серверну частину системи SmartFood, яка реалізує повний цикл бізнес-логіки ресторанного обслуговування - від створення замовлення клієнтом до завершення його обробки персоналом. Було створено набір ендпоінтів для обробки даних, реалізовано автоматичний розрахунок вартості замовлення, а також впроваджено чітку систему переходів між статусами відповідно до ролей користувачів.
+	Застосування JWT-авторизації забезпечило розмежування прав доступу, що значно підвищило безпечність системи та дотримання логічної моделі роботи ресторану. Окрему увагу приділено створенню адміністративних функцій: управління користувачами, ролями, меню та отримання статистичної інформації про популярність страв.
+
+5 ВИКОРИСТАНІ ДЖЕРЕЛА
+1. Flask-JWT-Extended’s Documentation – flask-jwt-extended 4.7.1 documentation. Flask-JWT-Extended’s Documentation – flask-jwt-extended 4.7.1 documentation. URL: https://flask-jwt-extended.readthedocs.io/en/stable/ (date of access: 10.12.2025).
+2. OpenAPI specification - version 3.1.0 | swagger. API Documentation & Design Tools for Teams | Swagger. URL: https://swagger.io/specification/ (date of access: 10.12.2025).
+3. What is REST?: REST API Tutorial. REST API Tutorial. URL: https://restfulapi.net/ (date of access: 10.12.2025).
+
+
+ДОДАТОК А
+Відеозапис
+Відеозапис доповіді: https://youtu.be/O60EqcTgHvU
+Хронологічний опис відеозапису:
+00:00 - Представлення, вступ
+00:16 - Бізнес логіка серверної
+01:03 - Функції адміністрування серверної частини
+01:41 - Тестування: система зі сторони клієнта
+02:58 - Тестування: система зі сторони офіціанта/кухаря
+04:18 - Тестування: система зі сторони адміністратора
+04:38 - Тестування: система зі сторони адміністратора (керування меню та замовленнями)
+05:36 - Тестування: система зі сторони адміністратора (статистика)
+05:50 - Тестування: система зі сторони адміністратора (керування користувачами)
+
+
+ДОДАТОК Б
+Програмний код
+Б.1 Бізнес-логіка замовлень та рольовий доступ
+GitHub репозиторій: https://github.com/NureDavydenkoPolina/ark-pzpi-23-3-davydenko-polina/blob/main/Lab3/ark-pzpi-23-3-davydenko-polina-lab3/SmartFoodBackend/routes/routes.py
+ 1  from flask import request, Response, jsonify
+ 2  import json
+ 3  from flask_jwt_extended import create_access_token
+ 4  from flask_jwt_extended import jwt_required
+ 5  from flask_jwt_extended import get_jwt_identity
+ 6  
+ 7  from services.dish_service import get_all_dishes
+ 8  from services.order_service import create_order, get_order_by_id, update_order_status, calculate_total
+ 9  from services.order_item_service import add_order_item, get_items_by_order, delete_order_item
+10  from services.user_service import verify_user
+11  from auth.role_required import role_required
+12  
+13  def init_routes(app):
+14  
+15      @app.route("/api/login", methods=["POST"])
+16      def login():
+17          data = request.get_json()
+18          user = verify_user(data["email"], data["password"])
+19          if not user:
+20              return jsonify({"error": "Невірна пошта або пароль"}), 401
+21  
+22          payload = {"id": user.user_id, "role": user.role_id}
+23          token = create_access_token(identity=json.dumps(payload))
+24  
+25          return jsonify({"access_token": token})
+26  
+27      @app.route("/api/menu", methods=["GET"])
+28      def menu():
+29          dishes = get_all_dishes()
+30          result = []
+31          for d in dishes:
+32              result.append({
+33                  "dish_id": d.dish_id,
+34                  "dish_name": d.dish_name,
+35                  "price": float(d.price),
+36                  "description": d.description
+37              })
+38          return Response(json.dumps(result, ensure_ascii=False, indent=4),
+39                          content_type="application/json; charset=utf-8")
+40  
+41      @app.route("/api/order/create", methods=["POST"])
+42      def order_create():
+43          data = request.get_json()
+44          order = create_order(data["table_id"])
+45          return jsonify({"order_id": order.order_id, "status": order.status.value})
+46  
+47      @app.route("/api/order/<int:order_id>", methods=["GET"])
+48      def order_details(order_id):
+49          order = get_order_by_id(order_id)
+50          return jsonify({
+51              "order_id": order.order_id,
+52              "table_id": order.table_id,
+53              "status": order.status.value,
+54              "total_price": order.total_price
+55          })
+56      
+57      @app.route("/api/order/<int:order_id>/add-item", methods=["POST"])
+58      def add_item(order_id):
+59          data = request.get_json()
+60          item = add_order_item(order_id, data["dish_id"], data["quantity"])
+61          return jsonify({
+62              "message": "Страву додано",
+63              "dish_id": item.dish_id,
+64              "unit_price": item.unit_price,
+65              "total_item_price": item.total_item_price
+66          })
+67  
+68  
+69      @app.route("/api/order/<int:order_id>/items", methods=["GET"])
+70      @role_required(2, 3)
+71      @jwt_required()
+72      def order_items(order_id):
+73          items = get_items_by_order(order_id)
+74          result = []
+75          for i in items:
+76              result.append({
+77                  "dish_id": i.dish_id,
+78                  "quantity": i.quantity,
+79                  "unit_price": i.unit_price,
+80                  "total_item_price": i.total_item_price
+81              })
+82          return jsonify(result)
+83  
+84      @app.route("/api/order/<int:order_id>/status", methods=["PUT"])
+85      @jwt_required()
+86      def update_status(order_id):
+87          data = request.get_json()
+88          identity = json.loads(get_jwt_identity())
+89          role = identity["role"]
+90          new_status = data["status"]
+91  
+92          # waiter може тільки delivered
+93          if role == 2 and new_status != "delivered":
+94              return jsonify({"error": "Офіціант може встановити лише статус delivered"}), 403
+95  
+96          if role == 3 and new_status == "delivered":
+97              return jsonify({"error": "Кухар не може встановити статус delivered"}), 403
+98  
+99          updated = update_order_status(order_id, new_status)
+100 
+101         return jsonify({
+102             "order_id": updated.order_id,
+103             "new_status": updated.status.value
+104         })
+105 
+106     @app.route("/api/order/<int:order_id>/total", methods=["GET"])
+107     def order_total(order_id):
+108         total = calculate_total(order_id)
+109         return jsonify({"order_id": order_id, "total_price": total})
+110 
+111     @app.route("/api/order/<int:order_id>/delete-item", methods=["DELETE"])
+112     def delete_item(order_id):
+113         data = request.get_json()
+114         delete_order_item(order_id, data["dish_id"])
+115         return jsonify({"message": "Позицію видалено", "dish_id": data["dish_id"]})
+
+
+Б.2 Функції адміністрування
+GitHub репозиторій: https://github.com/NureDavydenkoPolina/ark-pzpi-23-3-davydenko-polina/blob/main/Lab3/ark-pzpi-23-3-davydenko-polina-lab3/SmartFoodBackend/routes/admin_routes.py
+  1  from flask import Blueprint, request, jsonify
+  2  from flask_jwt_extended import jwt_required, get_jwt_identity
+  3  import json
+  4  
+  5  from config import db
+  6  from models.models import User, Order, OrderItem, Dish
+  7  from services.dish_service import (
+  8      create_dish, update_dish, delete_dish, get_all_dishes
+  9  )
+ 10  from services.user_service import create_user
+ 11  from sqlalchemy import func
+ 12  
+ 13  admin_bp = Blueprint("admin_bp", __name__)
+ 14  
+ 15  def is_admin():
+ 16      identity = json.loads(get_jwt_identity())
+ 17      return identity["role"] == 1
+ 18  
+ 19  @admin_bp.route("/admin/dish", methods=["POST"])
+ 20  @jwt_required()
+ 21  def admin_create_dish():
+ 22      if not is_admin():
+ 23          return jsonify({"error": "Доступ дозволено лише адміністратору"}), 403
+ 24  
+ 25      data = request.get_json()
+ 26      dish = create_dish(
+ 27          data["dish_name"],
+ 28          data.get("description", ""),
+ 29          data["price"],
+ 30          data["category_id"]
+ 31      )
+ 32      return jsonify({"message": "Страву створено", "dish_id": dish.dish_id})
+ 33  
+ 34  @admin_bp.route("/admin/dish/<int:dish_id>", methods=["PUT"])
+ 35  @jwt_required()
+ 36  def admin_update_dish(dish_id):
+ 37      if not is_admin():
+ 38          return jsonify({"error": "Доступ дозволено лише адміністратору"}), 403
+ 39  
+ 40      data = request.get_json()
+ 41      dish = update_dish(dish_id, **data)
+ 42      return jsonify({"message": "Страву оновлено"})
+ 43  
+ 44  @admin_bp.route("/admin/dish/<int:dish_id>", methods=["DELETE"])
+ 45  @jwt_required()
+ 46  def admin_delete_dish(dish_id):
+ 47      if not is_admin():
+ 48          return jsonify({"error": "Доступ дозволено лише адміністратору"}), 403
+ 49  
+ 50      delete_dish(dish_id)
+ 51      return jsonify({"message": "Страву видалено"})
+ 52  
+ 53  @admin_bp.route("/admin/users", methods=["GET"])
+ 54  @jwt_required()
+ 55  def admin_get_users():
+ 56      if not is_admin():
+ 57          return jsonify({"error": "Доступ дозволено лише адміністратору"}), 403
+ 58  
+ 59      users = User.query.all()
+ 60      return jsonify([{
+ 61          "user_id": u.user_id,
+ 62          "name": u.user_name,
+ 63          "email": u.email,
+ 64          "phone": u.phone,
+ 65          "role_id": u.role_id
+ 66      } for u in users])
+ 67  
+ 68  @admin_bp.route("/admin/users", methods=["POST"])
+ 69  @jwt_required()
+ 70  def admin_create_user():
+ 71      if not is_admin():
+ 72          return jsonify({"error": "Доступ дозволено лише адміністратору"}), 403
+ 73  
+ 74      data = request.get_json()
+ 75      user = create_user(
+ 76          data["name"],
+ 77          data["email"],
+ 78          data.get("phone"),
+ 79          data["password"],
+ 80          data["role_id"]
+ 81      )
+ 82      return jsonify({"message": "Користувача створено", "user_id": user.user_id})
+ 83  
+ 84  @admin_bp.route("/admin/users/<int:user_id>", methods=["DELETE"])
+ 85  @jwt_required()
+ 86  def admin_delete_user(user_id):
+ 87      if not is_admin():
+ 88          return jsonify({"error": "Доступ дозволено лише адміністратору"}), 403
+ 89  
+ 90      user = User.query.get(user_id)
+ 91      if not user:
+ 92          return jsonify({"error": "Користувача не знайдено"}), 404
+ 93  
+ 94      db.session.delete(user)
+ 95      db.session.commit()
+ 96      return jsonify({"message": "Користувача видалено"})
+ 97  
+ 98  @admin_bp.route("/admin/orders", methods=["GET"])
+ 99  @jwt_required()
+100  def admin_all_orders():
+101      if not is_admin():
+102          return jsonify({"error": "Доступ дозволено лише адміністратору"}), 403
+103  
+104      orders = Order.query.all()
+105      return jsonify([{
+106          "order_id": o.order_id,
+107          "table_id": o.table_id,
+108          "status": o.status.value,
+109          "total_price": o.total_price,
+110          "created_at": o.created_at
+111      } for o in orders])
+112  
+113  @admin_bp.route("/admin/users/<int:user_id>/role", methods=["PUT"])
+114  @jwt_required()
+115  def admin_update_role(user_id):
+116      if not is_admin():
+117          return jsonify({"error": "Доступ лише адміну"}), 403
+118  
+119      data = request.get_json()
+120      new_role = data.get("role_id")
+121  
+122      if new_role is None:
+123          return jsonify({"error": "role_id є обов'язковим"}), 400
+124  
+125      user = User.query.get(user_id)
+126      if not user:
+127          return jsonify({"error": "Користувача не знайдено"}), 404
+128  
+129      user.role_id = new_role
+130      db.session.commit()
+131  
+132      return jsonify({
+133          "message": "Роль оновлено успішно",
+134          "user_id": user.user_id,
+135          "new_role_id": new_role
+136      })
+137  
+138  @admin_bp.route("/admin/stats/top-dishes", methods=["GET"])
+139  @jwt_required()
+140  def admin_top_dishes():
+141      if not is_admin():
+142          return jsonify({"error": "Доступ лише адміну"}), 403
+143  
+144      stats = db.session.query(
+145          Dish.dish_name,
+146          func.sum(OrderItem.quantity).label("total_sold"),
+147          func.sum(OrderItem.total_item_price).label("total_income")
+148      ).join(Dish, Dish.dish_id == OrderItem.dish_id) \
+149       .join(Order, Order.order_id == OrderItem.order_id) \
+150       .filter(Order.status == "delivered") \
+151       .group_by(Dish.dish_name) \
+152       .order_by(func.sum(OrderItem.quantity).desc()) \
+153       .all()
+154  
+155      result = [{
+156          "dish_name": row[0],
+157          "total_sold": int(row[1]),
+158          "total_income": float(row[2])
+159      } for row in stats]
+160  
+161      return jsonify(result)
+
+
+Б.3 Реалізація рольової авторизації
+GitHub репозиторій: https://github.com/NureDavydenkoPolina/ark-pzpi-23-3-davydenko-polina/blob/main/Lab3/ark-pzpi-23-3-davydenko-polina-lab3/SmartFoodBackend/auth/role_required.py
+ 1  from flask_jwt_extended import get_jwt_identity
+ 2  from flask import jsonify
+ 3  import json
+ 4  
+ 5  def role_required(*roles):
+ 6      def decorator(func):
+ 7          def wrapper(*args, **kwargs):
+ 8              identity = json.loads(get_jwt_identity())
+ 9              if identity is None or identity["role"] not in roles:
+10                  return jsonify({"error": "Доступ заборонено"}), 403
+11              return func(*args, **kwargs)
+12          wrapper.__name__ = func.__name__
+13          return wrapper
+14      return decorator
+
+
+
+Б.4 Логіка реєстрації та авторизації користувачів
+GitHub репозиторій: https://github.com/NureDavydenkoPolina/ark-pzpi-23-3-davydenko-polina/blob/main/Lab3/ark-pzpi-23-3-davydenko-polina-lab3/SmartFoodBackend/services/user_service.py
+  1  from models.models import User
+ 2  from config import db
+ 3  from werkzeug.security import generate_password_hash, check_password_hash
+ 4  
+ 5  def create_user(name, email, phone, password, role_id):
+ 6      hashed = generate_password_hash(password)
+ 7      user = User(
+ 8          user_name=name,
+ 9          email=email,
+10          phone=phone,
+11          password=hashed,
+12          role_id=role_id
+13      )
+14      db.session.add(user)
+15      db.session.commit()
+16      return user
+17  
+18  def verify_user(email, password):
+19      user = User.query.filter_by(email=email).first()
+20      if user and check_password_hash(user.password, password):
+21          return user
+22      return None
+2
+
+
