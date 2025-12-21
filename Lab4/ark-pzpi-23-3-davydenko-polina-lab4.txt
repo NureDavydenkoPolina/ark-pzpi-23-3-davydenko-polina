@@ -1,0 +1,430 @@
+﻿Харківський національний університет радіоелектроніки
+Факультет комп’ютерних наук
+Катедра програмної інженерії
+
+
+ЗВІТ
+до лабораторної роботи №4
+з дисципліни «Аналіз та рефакторинґ коду»
+на тему: «Створення IоT клієнта»
+
+
+Виконала
+ст. гр. ПЗПІ-23-3 
+Давиденко Поліна
+Перевірив
+ст. викладач катедри ПІ
+Сокорчук Ігор Петрович
+
+
+Харків 2025
+1 ІСТОРІЯ ЗМІН
+№
+Дата
+Версія звіту
+Опис змін та виправлень
+1
+20.12.2025
+0.1
+Створено розділ «Завдання»
+2
+20.12.2025
+0.2
+Створено розділ «Опис Виконаної роботи»
+3
+21.12.2025
+0.3
+Завершено розділ «Опис Виконаної роботи»
+
+
+2 ЗАВДАННЯ
+1. Розробити будову програмного забезпечення IoT клієнта:
+* Спроектувати архітектуру IoT клієнта, враховуючи його призначення та взаємодію з серверною частиною. Розробити загальну структуру, включаючи модулі обробки даних, мережевих протоколів та управління пристроями.
+2. Створити UML діаграму прецедентів для IoT клієнта:
+* Діаграма прецедентів повинна описувати основні сценарії взаємодії користувача та системи з IoT клієнтом. Це можуть бути такі прецеденти, як «Налаштування параметрів клієнта», «Надсилання даних на сервер», «Оновлення прошивки» тощо.
+3. Розробити бізнес логіку та функції налаштування IoT клієнта:
+* Розробити основну бізнес логіку для роботи з даними пристроїв (зчитування, відправлення на сервер тощо).
+* Розробити функції налаштування IoT клієнта (конфігурування мережі, параметрів підключення, управління енергоспоживанням).
+4. Створити UML діаграму діяльності для IoT клієнта:
+* Діаграма діяльності повинна відображати основні дії IoT клієнта, наприклад, послідовність дій при передачі даних на сервер, процес з'єднання з мережею або оновлення прошивки.
+5. Створити програмну реалізацію бізнес логіки та функцій налаштування IoT клієнта:
+* Реалізувати програмний код для виконання бізнес логіки, включаючи обробку даних з датчиків, комунікацію із серверною частиною через мережеві протоколи (наприклад, MQTT, HTTP).
+* Реалізувати налаштування IoT клієнта, такі як конфігурація мережі, перезавантаження або відновлення параметрів за замовчуванням.
+6. Перевірити роботу IoT клієнта:
+* Провести тестування розроблених компонентів IoT клієнта, перевіривши коректність обміну даними із сервером, функціональність налаштувань та стабільність роботи.
+
+
+3 ОПИС ВИКОНАНОЇ РОБОТИ
+	3.1 Будова ПЗ IoT клієнта та архітектура
+	У межах лабораторної роботи було розроблено IoT-клієнт для системи SmartFood, який імітує роботу термінала столика та екрана кухні і взаємодіє з серверною частиною через мережу. Призначення клієнта полягає в тому, щоб на стороні пристрою забезпечити вибір страв із меню, створення та наповнення замовлення, розрахунок підсумкової вартості, а також фіксацію стану замовлення на рівні користувацького інтерфейсу (локальне блокування редагування після підтвердження). Для перевірки додатково реалізовано Kitchen IoT, який періодично відстежує нові та змінені замовлення на сервері та відображає їх у консольному вигляді.
+	Архітектура клієнта побудована модульно. Модуль керування налаштуваннями зберігає та читає параметри підключення (адреса сервера, інтервал опитування, номер столика), що дозволяє запускати клієнт у різних середовищах без зміни коду. Мережевий модуль реалізує обмін даними із сервером через HTTP/REST. Модуль бізнес-логіки керує сценаріями роботи: перегляд меню, автоматичне створення замовлення при першому додаванні позиції, додавання позицій у замовлення, отримання деталізованого списку позицій з назвами страв, та розрахунок загальної суми. Модуль керування станом реалізує стани Draft/Locked: у Draft користувач може додавати позиції, а після натискання кнопки підтвердження (Submit) редагування блокується на стороні клієнта. Модуль інтерфейсу забезпечує взаємодію з користувачем: вибір столика при запуску, навігацію по меню (вгору/вниз), перегляд замовлення, повернення назад до меню, а також демонстраційну кнопку виклику офіціанта (поки що без мережевої дії, лише візуальне повідомлення).
+	Взаємодія з сервером відбувається за такими принципами: замовлення та його позиції зберігаються в базі даних на сервері, а IoT-клієнт лише ініціює дії через API. Для відображення замовлення словами, а не ідентифікаторами, використано розширений endpoint, який повертає позиції замовлення з назвами страв (JOIN із таблицею страв), а також endpoint для пошуку активного замовлення за столиком (статус created). Це дозволяє клієнту після перезапуску продовжити роботу з поточним активним замовленням, якщо воно вже створене на сервері.
+	3.2 UML діаграма прецедентів 
+	Діаграма прецедентів описує взаємодію користувача з IoT-клієнтом та взаємодію клієнта з сервером SmartFoodBackend. Також її можна переглянути за посиланням. У діаграмі прецедентів основним актором виступає користувач столика, який взаємодіє з IoT-клієнтом: переглядає меню, обирає страви, додає їх до замовлення та відкриває екран перегляду сформованого замовлення. Другим актором є кухня, яка отримує інформацію про нові або оновлені замовлення та переглядає їхній склад для подальшого приготування. Серверна частина SmartFoodBackend виступає зовнішньою системою, з якою IoT-клієнт обмінюється даними через API: сервер надає перелік страв, створює замовлення, фіксує додані позиції та повертає деталізовані дані замовлення (включно з назвами страв і підсумковою сумою).
+
+Рисунок 3.1 - UML діаграма прецедентів для IoT клієнта
+
+	3.3 Бізнес-логіка та функції налаштування IoT клієнта
+	Ключова бізнес-логіка термінала столика реалізує повний цикл формування замовлення. Після запуску користувач вводить номер столика, після чого клієнт отримує меню з сервера і дає змогу переміщатися по списку страв. Замовлення створюється не окремою командою, а автоматично: коли користувач уперше натискає кнопку ADD, клієнт перевіряє, чи існує активне замовлення для столика зі статусом created; якщо таке замовлення знайдене, клієнт працює з ним, а якщо ні - створює нове замовлення через API і запам’ятовує його ідентифікатор. Кожне натискання ADD збільшує кількість вибраної страви на одну одиницю та відображає результат через перегляд замовлення та total. Кнопка BACK повертає користувача з екрану перегляду на екран меню, щоб він міг дозамовити позиції, якщо замовлення ще не підтверджене. Кнопка підтвердження (Submit) не змінює дані на сервері, але переводить клієнт у стан Locked: після цього додавання позицій забороняється. 
+	Налаштування IoT-клієнта реалізовані у вигляді конфігураційного файлу (config.json), де зберігаються базова адреса сервера, table_id та інтервал опитування (для Kitchen IoT). Керування енергоспоживанням у рамках симуляції реалізовано через паузи між мережевими запитами (sleep/polling): клієнт не здійснює постійних запитів без потреби, а кухонний модуль виконує опитування сервера з заданим інтервалом, що зменшує навантаження на мережу та сервер. Також передбачено відновлення роботи після помилок з’єднання: при отриманні помилки HTTP або недоступності сервера програма не завершує роботу аварійно, а виводить повідомлення та повторює спроби через інтервал.
+	3.4 UML діаграма діяльності 
+	Діаграма діяльності відображає послідовність дій IoT-клієнта в основному сценарії. Також її можна переглянути за посиланням.
+	Процес починається із введення table_id і завантаження меню з сервера. Далі користувач навігує по меню та натискає ADD для додавання позиції. Якщо це перше додавання, клієнт або знаходить активне замовлення на сервері, або створює нове. Потім позиція додається до замовлення через API. У будь-який момент користувач може перейти до перегляду замовлення, де клієнт запитує список позицій та загальну суму і відображає їх. Повернення назад переводить користувача до меню, де можливе дозамовлення. Після натискання Submit клієнт переходить у стан Locked і блокує подальші зміни, залишаючи доступним лише перегляд і виклик офіціанта. 
+	Окремий фоновий сценарій (Kitchen IoT) реалізує цикл опитування: періодично запитує список замовлень, відбирає created та відображає нові або оновлені замовлення, порівнюючи їхній набір позицій і кількостей із попереднім станом. 
+
+Рисунок 3.2 - UML діаграма діяльності для IoT клієнта
+	3.5 Програмна реалізація бізнес-логіки та налаштувань
+	Програмна реалізація виконана мовою Python у вигляді двох клієнтських застосунків, які запускаються паралельно у двох терміналах. Table IoT реалізує користувацький сценарій формування замовлення та використовує HTTP-запити до SmartFoodBackend для отримання меню, створення замовлення, додавання позицій, отримання деталізованого переліку позицій із назвами страв і розрахунком загальної суми. Kitchen IoT реалізує моніторинг замовлень: виконує авторизацію (отримання JWT-токена) і звертається до адміністративного endpoint для перегляду замовлень, після чого підтягує деталізацію замовлення через items-expanded. Налаштування зберігаються у конфігураційному файлі, а їх відновлення до значень за замовчуванням виконується шляхом зміни/перезапису конфігурації або запуску без введених параметрів. Перезапуск клієнта не призводить до втрати даних замовлення, оскільки замовлення зберігаються в БД на сервері, а для відновлення роботи використовується пошук активного замовлення за table_id.
+
+
+4 ВИСНОВКИ
+	У ході лабораторної роботи було розроблено IoT-клієнт для системи SmartFood, який імітує роботу термінала столика та забезпечує формування замовлення через взаємодію з серверною частиною. Реалізовано повний базовий сценарій: вибір столика, перегляд меню, автоматичне створення замовлення при першому додаванні позиції, багаторазове додавання страв, перегляд сформованого замовлення у зрозумілому вигляді (з назвами страв, кількістю, ціною та підсумком) і повернення до меню для дозамовлення. Додатково реалізовано механізм локального підтвердження замовлення (Submit/Lock), який блокує подальше редагування на стороні клієнта, та демонстраційну кнопку виклику офіціанта як елемент інтерфейсу. Взаємодія з сервером виконана через HTTP/REST, а збереження даних забезпечується сервером у базі даних, що дозволяє відновлювати активне замовлення за столиком.
+
+5 ВИКОРИСТАНІ ДЖЕРЕЛА
+1. Flask-JWT-Extended’s Documentation – flask-jwt-extended 4.7.1 documentation. Flask-JWT-Extended’s Documentation – flask-jwt-extended 4.7.1 documentation. URL: https://flask-jwt-extended.readthedocs.io/en/stable/ (date of access: 10.12.2025).
+2. OpenAPI specification - version 3.1.0 | swagger. API Documentation & Design Tools for Teams | Swagger. URL: https://swagger.io/specification/ (date of access: 10.12.2025).
+3. What is REST?: REST API Tutorial. REST API Tutorial. URL: https://restfulapi.net/ (date of access: 10.12.2025).
+
+
+
+ДОДАТОК А
+Відеозапис
+Відеозапис доповіді: https://youtu.be/UJqFW9f7i0U
+Хронологічний опис відеозапису:
+00:00 - Представлення, вступ
+00:22 - Діаграма прецедентів
+01:12 - Бізнес-логіка та функції налаштування IoT клієнта
+02:36 - Діаграма діяльності
+03:45 - Програмна реалізація бізнес-логіки
+04:39 - Тестування: Запуск та перевірка сервера
+04:57 - Тестування: Kitchen IoT
+05:46 - Тестування: Table IoT + Kitchen IoT
+07:46 - Тестування: Перевірка створення замовлення
+
+
+
+ДОДАТОК Б
+Програмний код
+Б.1 Налаштування: сервер, столик, інтервал опитування
+GitHub репозиторій: https://github.com/NureDavydenkoPolina/ark-pzpi-23-3-davydenko-polina/blob/main/Lab4/SmartFood/SmartFoodIoTClient/config.json
+1 {
+2   "base_url": "http://127.0.0.1:5000",
+3   "table_id": 1,
+4   "admin_email": "admin@smartfood.com",
+5   "admin_password": "admin123",
+6   "poll_sec": 3
+7 }
+
+Б.2 Клієнт столика: меню, додавання, підтвердження
+GitHub репозиторій: https://github.com/NureDavydenkoPolina/ark-pzpi-23-3-davydenko-polina/blob/main/Lab4/SmartFood/SmartFoodIoTClient/table_iot.py
+1 import json
+2 from dataclasses import dataclass
+3 from typing import Any, Dict, List, Optional
+4 
+5 import requests
+6 
+7 
+8 @dataclass
+9 class Dish:
+10     dish_id: int
+11     dish_name: str
+12     price: float
+13 
+14 
+15 class SmartTableClient:
+16     def __init__(self, base_url: str, table_id: int):
+17         self.base_url = base_url.rstrip("/")
+18         self.table_id = table_id
+19 
+20         self.menu: List[Dish] = []
+21         self.selected_index: int = 0
+22 
+23         self.order_id: Optional[int] = None
+24         self.locked: bool = False  
+25 
+26     def _get(self, path: str) -> Any:
+27         r = requests.get(f"{self.base_url}{path}", timeout=10)
+28         if r.status_code >= 400:
+29             try:
+30                 return {"_error": r.json(), "_status": r.status_code}
+31             except Exception:
+32                 return {"_error": r.text, "_status": r.status_code}
+33         return r.json()
+34 
+35     def _post(self, path: str, payload: Dict[str, Any]) -> Any:
+36         r = requests.post(f"{self.base_url}{path}", json=payload, timeout=10)
+37         if r.status_code >= 400:
+38             try:
+39                 return {"_error": r.json(), "_status": r.status_code}
+40             except Exception:
+41                 return {"_error": r.text, "_status": r.status_code}
+42         return r.json()
+43 
+44     def load_menu(self) -> None:
+45         data = self._get("/api/menu")
+46         if isinstance(data, dict) and "_error" in data:
+47             raise RuntimeError(f"Menu error: {data}")
+48 
+49         self.menu = [
+50             Dish(dish_id=int(d["dish_id"]), dish_name=str(d["dish_name"]), price=float(d["price"]))
+51             for d in data
+52         ]
+53         self.selected_index = 0
+54 
+55     def ensure_order_id(self) -> None:
+56         if self.order_id is not None:
+57             return
+58 
+59         active = self._get(f"/api/table/{self.table_id}/active-order")
+60         if isinstance(active, dict) and "_error" not in active:
+61             self.order_id = int(active["order_id"])
+62             return
+63 
+64         created = self._post("/api/order/create", {"table_id": self.table_id})
+65         if isinstance(created, dict) and "_error" in created:
+66             raise RuntimeError(f"Create order error: {created}")
+67 
+68         self.order_id = int(created["order_id"])
+69 
+70     def add_selected_item(self) -> str:
+71         if self.locked:
+72             return "LOCKED: you can`t add"
+73 
+74         if not self.menu:
+75             return "No menu"
+76 
+77         self.ensure_order_id()
+78         assert self.order_id is not None
+79 
+80         dish = self.menu[self.selected_index]
+81         resp = self._post(f"/api/order/{self.order_id}/add-item", {"dish_id": dish.dish_id, "quantity": 1})
+82 
+83         if isinstance(resp, dict) and "_error" in resp:
+84             return f"Error ADD: {resp}"
+85 
+86         return f"Added: {dish.dish_name} (+1)"
+87 
+88     def get_order_view(self) -> Dict[str, Any]:
+89         if self.order_id is None:
+90             active = self._get(f"/api/table/{self.table_id}/active-order")
+91             if isinstance(active, dict) and "_error" not in active:
+92                 self.order_id = int(active["order_id"])
+93             else:
+94                 return {"message": "There is no active order yet. Click ADD to create one."}
+95 
+96         assert self.order_id is not None
+97         data = self._get(f"/api/order/{self.order_id}/items-expanded")
+98         if isinstance(data, dict) and "_error" in data:
+99             return {"error": data}
+100 
+101         return data
+102 
+103     def show_menu_screen(self) -> None:
+104         print("\n" + "=" * 60)
+105         print(f"SmartTable IoT | table_id={self.table_id} | state={'LOCKED' if self.locked else 'DRAFT'}")
+106         print("Buttons: [U]Up  [D]Down  [A]Add  [V]View order  [S]Submit/Lock  [C]Call waiter  [Q]Quit")
+107         print("-" * 60)
+108 
+109         if not self.menu:
+110             print("(The menu is empty.)")
+111             return
+112 
+113         start = max(0, self.selected_index - 2)
+114         end = min(len(self.menu), start + 5)
+115 
+116         for i in range(start, end):
+117             mark = ">" if i == self.selected_index else " "
+118             d = self.menu[i]
+119             print(f"{mark} {d.dish_id}. {d.dish_name} — {d.price:.2f}")
+120 
+121         if self.order_id:
+122             print(f"\nCurrent order_id: {self.order_id}")
+123 
+124     def show_order_screen(self) -> None:
+125         print("\n" + "=" * 60)
+126         print(f"ORDER VIEW | table_id={self.table_id} | state={'LOCKED' if self.locked else 'DRAFT'}")
+127         print("Buttons: [B]Back  [S]Submit/Lock  [C]Call waiter  [Q]Quit")
+128         print("-" * 60)
+129 
+130         data = self.get_order_view()
+131         if "message" in data:
+132             print(data["message"])
+133             return
+134 
+135         if "error" in data:
+136             print("Error:", data["error"])
+137             return
+138 
+139         items = data.get("items", [])
+140         if not items:
+141             print("The order is empty.")
+142         else:
+143             for it in items:
+144                 print(f"- {it['dish_name']}  x{it['quantity']}  "
+145                       f"({float(it['unit_price']):.2f})  = {float(it['total_item_price']):.2f}")
+146 
+147         print("-" * 60)
+148         print(f"Total: {float(data.get('total_price', 0.0)):.2f}")
+149         print(f"order_id: {data.get('order_id')} | status: {data.get('status')}")
+150 
+151     def call_waiter(self) -> str:
+152         return "The waiter has been called ✅"
+153 
+154 
+155 def load_config() -> Dict[str, Any]:
+156     with open("config.json", "r", encoding="utf-8") as f:
+157         return json.load(f)
+158 
+159 
+160 def main():
+161     cfg = load_config()
+162     base_url = cfg.get("base_url", "http://127.0.0.1:5000")
+163     table_id = int(cfg.get("table_id", 1))
+164 
+165     raw = input(f"Enter table_id (Enter = {table_id}): ").strip()
+166     if raw:
+167         table_id = int(raw)
+168 
+169     client = SmartTableClient(base_url, table_id)
+170 
+171     # завантажуємо меню
+172     try:
+173         client.load_menu()
+174     except Exception as e:
+175         print("Failed to load menu:", e)
+176         print("Check that the backend is running and /api/menu is working.")
+177         return
+178 
+179     screen = "menu"
+180     while True:
+181         if screen == "menu":
+182             client.show_menu_screen()
+183             cmd = input("Command: ").strip().lower()
+184 
+185             if cmd == "q":
+186                 break
+187             elif cmd == "u":
+188                 if client.menu:
+189                     client.selected_index = (client.selected_index - 1) % len(client.menu)
+190             elif cmd == "d":
+191                 if client.menu:
+192                     client.selected_index = (client.selected_index + 1) % len(client.menu)
+193             elif cmd == "a":
+194                 print(client.add_selected_item())
+195             elif cmd == "v":
+196                 screen = "order"
+197             elif cmd == "s":
+198                 if client.order_id is None:
+199                     print("There is no active order. Please click ADD first.")
+200                 else:
+201                     resp = client._post(f"/api/order/{client.order_id}/submit", {})
+202                     if isinstance(resp, dict) and "_error" in resp:
+203                         print("Error submit:", resp)
+204                     else:
+205                         client.locked = True
+206                         print("The order is confirmed and sent to the kitchen. (LOCKED)")
+207             elif cmd == "c":
+208                 print(client.call_waiter())
+209             else:
+210                 print("Unknown command.")
+211         else:
+212             client.show_order_screen()
+213             cmd = input("Command: ").strip().lower()
+214 
+215             if cmd == "q":
+216                 break
+217             elif cmd == "b":
+218                 screen = "menu"
+219             elif cmd == "s":
+220                 client.locked = True
+221                 print("Order confirmed (LOCKED).")
+222             elif cmd == "c":
+223                 print(client.call_waiter())
+224             else:
+225                 print("Unknown command.")
+226 
+227 
+228 if __name__ == "__main__":
+229     main()
+
+Б.3 Кухонний монітор: нові та оновлені замовлення
+GitHub репозиторій: https://github.com/NureDavydenkoPolina/ark-pzpi-23-3-davydenko-polina/blob/main/Lab4/SmartFood/SmartFoodIoTClient/kitchen_iot.py
+1 import json
+2 import time
+3 import requests
+4 
+5 def load_cfg():
+6     with open("config.json", "r", encoding="utf-8") as f:
+7         return json.load(f)
+8 
+9 def login(base_url, email, password):
+10     r = requests.post(f"{base_url}/api/login", json={"email": email, "password": password}, timeout=10)
+11     r.raise_for_status()
+12     data = r.json()
+13     return data["access_token"]
+14 
+15 def get_orders(base_url, token):
+16     headers = {"Authorization": f"Bearer {token}"}
+17     r = requests.get(f"{base_url}/api/admin/orders", headers=headers, timeout=10)
+18     r.raise_for_status()
+19     return r.json()
+20 
+21 def get_items_expanded(base_url, order_id):
+22     r = requests.get(f"{base_url}/api/order/{order_id}/items-expanded", timeout=10)
+23     r.raise_for_status()
+24     return r.json()
+25 
+26 def main():
+27     cfg = load_cfg()
+28     base_url = cfg["base_url"].rstrip("/")
+29     poll_sec = int(cfg.get("poll_sec", 3))
+30 
+31     token = login(base_url, cfg["admin_email"], cfg["admin_password"])
+32     print("Kitchen IoT started.")
+33 
+34     seen_state = {}
+35 
+36     def signature(details: dict):
+37         items = details.get("items", [])
+38         sig_items = tuple(sorted((int(it["dish_id"]), int(it["quantity"])) for it in items))
+39         total = float(details.get("total_price", 0.0))
+40         return (total, sig_items)
+41 
+42     while True:
+43         try:
+44             orders = get_orders(base_url, token)
+45             created = [o for o in orders if o.get("status") == "created"]
+46 
+47             created_ids = set(o["order_id"] for o in created)
+48             for oid in list(seen_state.keys()):
+49                 if oid not in created_ids:
+50                     del seen_state[oid]
+51 
+52             for o in created:
+53                 oid = o["order_id"]
+54                 details = get_items_expanded(base_url, oid)
+55                 sig = signature(details)
+56 
+57                 if oid not in seen_state:
+58                     seen_state[oid] = sig
+59                     print("\\n=== NEW ORDER ===")
+60                 elif seen_state[oid] != sig:
+61                     seen_state[oid] = sig
+62                     print("\\n=== UPDATED ORDER ===")
+63                 else:
+64                     continue
+65 
+66                 print(f"order_id={oid}, table_id={o.get('table_id')}, total={details.get('total_price')}")
+67                 for it in details.get("items", []):
+68                     print(f"- {it['dish_name']} x{it['quantity']} = {it['total_item_price']}")
+69                 print("====================\\n")
+70 
+71         except Exception as e:
+72             print("Error:", e)
+73 
+74         time.sleep(poll_sec)
+75 
+76 if __name__ == "__main__":
+77     main()
+
+
