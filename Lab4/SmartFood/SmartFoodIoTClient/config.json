@@ -1,7 +1,0 @@
-{
-  "base_url": "http://127.0.0.1:5000",
-  "table_id": 1,
-  "admin_email": "admin@smartfood.com",
-  "admin_password": "admin123",
-  "poll_sec": 3
-}
